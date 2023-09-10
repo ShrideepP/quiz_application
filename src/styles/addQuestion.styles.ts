@@ -1,6 +1,6 @@
-import { StyleSheet } from "react-native";
-import { 
-  COLORS, 
+import { StyleSheet } from "react-native"
+import {
+  COLORS,
   FONT_SIZE,
   SPACING,
   ROUNDED
@@ -14,9 +14,7 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: SPACING.lg,
+    padding: SPACING.lg
   },
   formContainer: {
     width: '100%',
@@ -40,6 +38,16 @@ const styles = StyleSheet.create({
     fontFamily: 'Raleway-Medium',
     backgroundColor: COLORS.background,
     borderRadius: ROUNDED.lg
+  },
+  optionField: {
+    width: '100%',
+    height: 50,
+    paddingHorizontal: SPACING.md,
+    color: COLORS.foreground,
+    fontSize: FONT_SIZE.base,
+    fontFamily: 'Raleway-Medium',
+    borderBottomWidth: 1,
+    borderBottomColor: 'rgba(0,0,0,0.1)'
   },
   errorText: {
     color: COLORS.destructive,
@@ -73,6 +81,6 @@ const styles = StyleSheet.create({
     fontSize: FONT_SIZE.base,
     fontFamily: 'Raleway-Medium'
   },
-});
+})
 
-export default styles;
+export default styles

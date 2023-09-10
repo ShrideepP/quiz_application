@@ -23,7 +23,8 @@ import { Icons } from "@/components/icons"
 
 import { 
   COLORS,
-  SPACING 
+  SPACING,
+  FONT_SIZE 
 } from "@/constants/theme"
 import styles from "@/styles/details.styles"
 
@@ -52,12 +53,20 @@ export default function QuizDetails() {
 
   async function deleteQuiz() {
     setDeleteLoader(true);
-    try {
-      const { error } = await supabase 
+    try {      
+      const { error: questionError } = await supabase
+        .from('questions')
+        .delete()
+        .eq('quiz_id', quizId)
+        
+      const { error: quizError } = await supabase 
         .from('quizzes')
         .delete()
         .eq('id', quizId)
-      if(!error) router.push('/explore')
+
+      if(quizError || questionError) {
+        Alert.alert('Oops! something went wrong', `${JSON.stringify(quizError)} ${JSON.stringify(questionError)}`)
+      } else router.push('/explore')
     } catch (error) {
       if(error) Alert.alert('Oops! something went wrong')
     } finally {
@@ -131,14 +140,23 @@ export default function QuizDetails() {
               </View>
             </View>
             <View style={{ borderBottomWidth: 1, borderBlockColor: 'rgba(0,0,0,0.1)' }} />
-            <TouchableOpacity style={styles.btnPrimary}>
-              <Text style={styles.btnPrimaryText}>Start Quiz</Text>
-            </TouchableOpacity>
+            {quizDetails.total_questions > 0 ? (
+              <TouchableOpacity style={styles.btnPrimary}>
+                <Text style={styles.btnPrimaryText}>Start Quiz</Text>
+              </TouchableOpacity>
+            ) : (
+              <View style={{ flexDirection: 'row', gap: SPACING.sm }}>
+                <Text style={styles.body}>There are no questions in this quiz!</Text>
+                <TouchableOpacity onPress={() => router.push(`/create/${quizDetails.id}_${quizDetails.total_questions}`)}>
+                  <Text style={{ color: COLORS.accent, fontSize: FONT_SIZE.base, fontFamily: 'Raleway-SemiBold', lineHeight: 25 }}>Add Questions?</Text>
+                </TouchableOpacity>
+              </View>
+            )}
           </View>
         </View>
       )}
       <View style={styles.footer}>
-        <TouchableOpacity style={styles.btnEdit}>
+        <TouchableOpacity onPress={() => router.push(`/edit/${quizDetails.id}`)} style={styles.btnEdit}>
           <Icons.MaterialCommunityIcons 
             name="pencil-outline" 
             size={20}

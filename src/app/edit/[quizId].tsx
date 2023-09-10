@@ -1,12 +1,19 @@
-import { useState } from "react"
-import { useRouter } from "expo-router"
+import {
+  useState,
+  useEffect
+} from "react"
+import { 
+  useRouter, 
+  useLocalSearchParams 
+} from "expo-router"
+
 import { supabase } from "@/config/supabase"
 
-import { 
+import {
   SafeAreaView,
-  Keyboard,
-  TouchableWithoutFeedback,
   TouchableOpacity,
+  TouchableWithoutFeedback,
+  Keyboard,
   ActivityIndicator,
   Alert,
   View,
@@ -20,8 +27,11 @@ import { Icons } from "@/components/icons"
 import { Formik } from "formik"
 import { quizDetailsSchema } from "@/lib/schema"
 
-import { COLORS } from "@/constants/theme"
-import styles from "@/styles/create.styles"
+import { 
+  COLORS,
+  SPACING 
+} from "@/constants/theme"
+import styles from "@/styles/edit.styles"
 
 interface FormValues {
   name: string
@@ -29,30 +39,48 @@ interface FormValues {
   timeLimit: string
 }
 
-const initialValues = {
-  name: '',
-  description: '',
-  timeLimit: '',
-}
+export default function EditQuiz() {
 
-export default function CreateQuiz() {
   const router = useRouter()
+  const { quizId } = useLocalSearchParams()
 
-  const [loading, setLoading] = useState(false);
+  const [quizDetails, setQuizDetails] = useState<any>({})
+  const [loading, setLoading] = useState(false)
+  const [submitLoader, setSubmitLoader] = useState(false)
 
-  async function handleSubmit(values: FormValues) {
-    setLoading(true);
-
+  async function fetchQuizDetails() {
+    setLoading(true)
     try {
       const { data } = await supabase
         .from('quizzes')
-        .insert({
-          'quiz_name': values.name,
-          'description': values.description,
-          'time_limit': values.timeLimit
+        .select('*')
+        .eq('id', quizId)
+      if(data) setQuizDetails(data[0])
+    } catch (error) {
+      if(error) Alert.alert('Oops! something went wrong')
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  async function handleSubmit(values: FormValues) {
+    const { name, description, timeLimit } = values;
+    setSubmitLoader(true)
+    
+    try {
+      const { error } = await supabase
+        .from('quizzes')
+        .update({
+          'quiz_name': name,
+          'description': description,
+          'time_limit': timeLimit
         })
-        .select('id, total_questions')
-      if(data) router.push(`/create/${data[0].id}_${data[0].total_questions}`)
+        .eq('id', quizId)
+      if(error) {
+        Alert.alert('Oops, something went wrong!', JSON.stringify(error), [
+          { text: 'Ok' }
+        ])
+      } else router.push('/explore')
     } catch (error) {
       if(error) {
         Alert.alert('Oops, something went wrong!', 'Please try again later.', [
@@ -60,9 +88,13 @@ export default function CreateQuiz() {
         ])
       }
     } finally {
-      setLoading(false)
+      setSubmitLoader(false)
     }
   }
+
+  useEffect(() => {
+    fetchQuizDetails();
+  }, [])
 
   return (
     <SafeAreaView style={{ flex: 1, position: 'relative', backgroundColor: COLORS.muted }}>
@@ -72,7 +104,7 @@ export default function CreateQuiz() {
           headerStyle: { backgroundColor: COLORS.accent },
           headerTitle: () => (
             <View style={{ paddingBottom: 10 }}>
-              <Text style={styles.headerTitle}>Create a Quiz</Text>
+              <Text style={styles.headerTitle}>Edit Quiz</Text>
             </View>
           ),
           headerLeft: () => (
@@ -82,17 +114,25 @@ export default function CreateQuiz() {
           )
         }} 
       />
-      <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
-        <View style={styles.container}>
-          <Formik
-            validationSchema={quizDetailsSchema}
-            initialValues={initialValues}
-            onSubmit={handleSubmit}
-          >
-            {({ handleSubmit, handleChange, values, errors }) => (
-              <>
+      {loading ? (
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator size="large" color={COLORS.accent} />
+        </View>
+      ) : (
+        <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+          <View style={styles.container}>
+            <Formik
+              onSubmit={handleSubmit}
+              validationSchema={quizDetailsSchema}
+              initialValues={{
+                name: quizDetails.quiz_name,
+                description: quizDetails.description,
+                timeLimit: String(quizDetails.time_limit)
+              }}
+            >
+              {({ handleSubmit, handleChange, values, errors }) => (
                 <View style={styles.formContainer}>
-                  <Text style={styles.headline}>Quiz Details</Text>
+                  <Text style={styles.headline}>Update Details</Text>
                   <View style={{ borderBottomWidth: 1, borderBlockColor: 'rgba(0,0,0,0.1)' }} />
                   <View style={styles.inputWrapper}>
                     {errors.name && <Text style={styles.errorText}>{errors.name}</Text>}
@@ -126,7 +166,7 @@ export default function CreateQuiz() {
                     />
                   </View>
                   <TouchableOpacity onPress={() => handleSubmit()} style={styles.btnPrimary}>
-                    {loading ? (
+                    {submitLoader ? (
                       <ActivityIndicator 
                         size="small" 
                         color={COLORS.background} 
@@ -136,11 +176,11 @@ export default function CreateQuiz() {
                     )}
                   </TouchableOpacity>
                 </View>
-              </>
-            )}
-          </Formik>
-        </View>
-      </TouchableWithoutFeedback>
+              )}
+            </Formik>
+          </View>
+        </TouchableWithoutFeedback>
+      )}
     </SafeAreaView>
   )
 }

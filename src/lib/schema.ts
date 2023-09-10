@@ -10,7 +10,7 @@ export const quizDetailsSchema = Yup.object().shape({
 })
 
 export const quizQueSchema = Yup.object().shape({
-  question: Yup.string().required('Question name is required'),
+  questionName: Yup.string().required('Question name is required'),
   option1: Yup.string().required('Option 1 is required'),
   option2: Yup.string().required('Option 2 is required')
     .test('is-unique-option', 'Options must be different', function (value) {
