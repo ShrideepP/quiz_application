@@ -3,7 +3,6 @@ import {
   useCallback, 
   useEffect
 } from 'react';
-import { useRouter } from 'expo-router';
 
 import {
   SafeAreaView,
@@ -36,8 +35,6 @@ interface Quiz {
 }
 
 export default function ExploreQuizzes() {
-  const router = useRouter();
-
   const [quizzes, setQuizzes] = useState<[] | any>([])
   const [loading, setLoading] = useState(false)
   const [refreshing, setRefreshing] = useState(false)
@@ -47,7 +44,7 @@ export default function ExploreQuizzes() {
     try {
       const { data } = await supabase
         .from('quizzes')
-        .select('id, quiz_name, description, time_limit')
+        .select('*')
       if(data) setQuizzes(data)
     } catch (error) {
       if(error) Alert.alert('Oops! something went wrong')

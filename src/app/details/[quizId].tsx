@@ -117,31 +117,19 @@ export default function QuizDetails() {
               <Text style={styles.body}>{quizDetails.description}</Text>
             </View>
             <View style={{ borderBottomWidth: 1, borderBlockColor: 'rgba(0,0,0,0.1)' }} />
-            <View style={{ flexDirection: 'row', gap: SPACING.md }}>
-              <View style={styles.iconBox}>
-                <Icons.AntDesign 
-                  name='questioncircleo' 
-                  color={COLORS.accent} 
-                  size={20}
-                />
-                <Text style={styles.subTitle}>
-                  {quizDetails.total_questions} questions
-                </Text>
-              </View>
-              <View style={styles.iconBox}>
-                <Icons.Entypo 
-                  name='stopwatch' 
-                  color={COLORS.accent} 
-                  size={20}
-                />
-                <Text style={styles.subTitle}>
-                  {quizDetails.time_limit} min
-                </Text>
-              </View>
+            <View style={styles.iconBox}>
+              <Icons.Entypo 
+                name='stopwatch' 
+                color={COLORS.accent} 
+                size={20}
+              />
+              <Text style={styles.subTitle}>
+                {quizDetails.time_limit} min
+              </Text>
             </View>
             <View style={{ borderBottomWidth: 1, borderBlockColor: 'rgba(0,0,0,0.1)' }} />
             {quizDetails.total_questions > 0 ? (
-              <TouchableOpacity style={styles.btnPrimary}>
+              <TouchableOpacity onPress={() => router.push(`/quiz/${quizId}`)} style={styles.btnPrimary}>
                 <Text style={styles.btnPrimaryText}>Start Quiz</Text>
               </TouchableOpacity>
             ) : (

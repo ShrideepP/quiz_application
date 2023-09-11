@@ -50,39 +50,29 @@ const initialValues = {
 
 export default function AddQuestion() {
   const router = useRouter()
-  const { quizData } = useGlobalSearchParams()
+  const { quizId } = useGlobalSearchParams()
 
   const [loading, setLoading] = useState(false)
-  const [quizId, total_questions] = String(quizData).split('_')
 
   const handleSubmit = async (values: typeof initialValues, { resetForm }: FormikHelpers<typeof initialValues>) => {
-      const totalQuestions = Number(total_questions) + 1
       setLoading(true)
 
       try {
-        const { error: quizError } = await supabase
-          .from('quizzes')
-          .update({
-            'total_questions': totalQuestions
-          })
-          .eq('id', quizId)
-
         const { error: questionError } = await supabase
           .from('questions')
           .insert({
             'question_text': values.questionName,
-            'question_order': totalQuestions,
             'options': [values.option1, values.option2, values.option3, values.option4],
             'correct_option': values.correctAnswer,
             'quiz_id': quizId,
           })
 
-        if(quizError || questionError) {
+        if(questionError) {
           Alert.alert('Oops, something went wrong!', 'Please try again later', [
             { text: 'Ok', onPress: () => router.push('/') }
           ])
         } else {
-          router.setParams({ quizData: `${quizId}_${totalQuestions}` })
+          router.setParams({ quizData: `${quizId}` })
           Alert.alert('SUCCESS!', 'The question has been added successfuly! would you like to add more?', [
             { text: 'No', onPress: () => router.push('/') },
             { text: 'Yes' },

@@ -51,8 +51,8 @@ export default function CreateQuiz() {
           'description': values.description,
           'time_limit': values.timeLimit
         })
-        .select('id, total_questions')
-      if(data) router.push(`/create/${data[0].id}_${data[0].total_questions}`)
+        .select('id')
+      if(data) router.push(`/create/${data[0].id}`)
     } catch (error) {
       if(error) {
         Alert.alert('Oops, something went wrong!', 'Please try again later.', [
@@ -63,7 +63,6 @@ export default function CreateQuiz() {
       setLoading(false)
     }
   }
-
   return (
     <SafeAreaView style={{ flex: 1, position: 'relative', backgroundColor: COLORS.muted }}>
       <StatusBar style="light" />
