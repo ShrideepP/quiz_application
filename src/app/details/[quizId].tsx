@@ -128,18 +128,9 @@ export default function QuizDetails() {
               </Text>
             </View>
             <View style={{ borderBottomWidth: 1, borderBlockColor: 'rgba(0,0,0,0.1)' }} />
-            {quizDetails.total_questions > 0 ? (
-              <TouchableOpacity onPress={() => router.push(`/quiz/${quizId}`)} style={styles.btnPrimary}>
-                <Text style={styles.btnPrimaryText}>Start Quiz</Text>
-              </TouchableOpacity>
-            ) : (
-              <View style={{ flexDirection: 'row', gap: SPACING.sm }}>
-                <Text style={styles.body}>There are no questions in this quiz!</Text>
-                <TouchableOpacity onPress={() => router.push(`/create/${quizDetails.id}_${quizDetails.total_questions}`)}>
-                  <Text style={{ color: COLORS.accent, fontSize: FONT_SIZE.base, fontFamily: 'Raleway-SemiBold', lineHeight: 25 }}>Add Questions?</Text>
-                </TouchableOpacity>
-              </View>
-            )}
+            <TouchableOpacity onPress={() => router.push(`/quiz/${quizId}`)} style={styles.btnPrimary}>
+              <Text style={styles.btnPrimaryText}>Start Quiz</Text>
+            </TouchableOpacity>
           </View>
         </View>
       )}

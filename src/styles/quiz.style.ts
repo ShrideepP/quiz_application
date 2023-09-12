@@ -5,35 +5,36 @@ import {
   FONT_SIZE,
   SPACING,
   ROUNDED
-} from "@/constants/theme"
+} from "@/constants/theme";
 
 const styles = StyleSheet.create({
   container: {
-    width: '100%',
     flex: 1,
-    paddingVertical: SPACING.lg
+    paddingVertical: SPACING.xl,
+    gap: SPACING.xs + 4
   },
   loadingContainer: {
     flex: 1,
     alignItems: 'center',
-    justifyContent: 'center'
+    justifyContent: 'center',
   },
-  contentContainer: {
-    gap: SPACING.md - 2
+  header: {
+    paddingHorizontal: SPACING.xl,
+    gap: SPACING.md + 2
   },
-  questionText: {
+  headerTitle: {
     color: COLORS.foreground,
-    fontSize: FONT_SIZE.xl,
+    fontSize: FONT_SIZE.lg + 2,
     fontFamily: 'Raleway-Bold'
   },
   optionContainer: {
-    paddingVertical: SPACING.md,
-    paddingHorizontal: SPACING.lg,
     flexDirection: 'row',
     alignItems: 'center',
     gap: SPACING.md,
+    paddingVertical: SPACING.md,
+    paddingHorizontal: SPACING.xl
   },
-  optionLabel: {
+  optionLabelContainer: {
     width: 35,
     height: 35,
     alignItems: 'center',
@@ -42,16 +43,55 @@ const styles = StyleSheet.create({
     borderColor: COLORS.accent,
     borderRadius: ROUNDED.full
   },
-  optionLabelText: {
+  optionLabel: {
     color: COLORS.accent,
-    fontSize: FONT_SIZE.lg,
+    fontSize: FONT_SIZE.lg - 2,
     fontFamily: 'Raleway-Bold'
   },
-  optionText: {
+  option: {
     color: COLORS.foreground,
-    fontSize: FONT_SIZE.base,
+    fontSize: FONT_SIZE.lg - 2,
     fontFamily: 'Raleway-SemiBold'
-  }
-})
+  },
+  footer: {
+    gap: SPACING.md + 2,
+    paddingHorizontal: SPACING.xl,
+  },
+  btnContainer: {
+    flexDirection: 'row',
+    gap: SPACING.sm
+  },
+  btnOutline: {
+    flex: 1,
+    height: 50,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: SPACING.xs,
+    borderWidth: 1,
+    borderColor: COLORS.accent,
+    borderRadius: ROUNDED.xl,
+  },
+  btnOutlineText: {
+    color: COLORS.accent,
+    fontSize: FONT_SIZE.base,
+    fontFamily: 'Raleway-Medium'
+  },
+  btnPrimary: {
+    flex: 1,
+    height: 50,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: SPACING.xs,
+    backgroundColor: COLORS.accent,
+    borderRadius: ROUNDED.xl,
+  },
+  btnPrimaryText: {
+    color: COLORS.background,
+    fontSize: FONT_SIZE.base,
+    fontFamily: 'Raleway-Medium'
+  },
+});
 
-export default styles
+export default styles;

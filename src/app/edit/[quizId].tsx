@@ -1,6 +1,7 @@
 import {
   useState,
-  useEffect
+  useCallback,
+  useEffect,
 } from "react"
 import { 
   useRouter, 
@@ -11,10 +12,10 @@ import { supabase } from "@/config/supabase"
 
 import {
   SafeAreaView,
+  ScrollView,
   TouchableOpacity,
-  TouchableWithoutFeedback,
-  Keyboard,
   ActivityIndicator,
+  RefreshControl,
   Alert,
   View,
   TextInput,
@@ -27,10 +28,8 @@ import { Icons } from "@/components/icons"
 import { Formik } from "formik"
 import { quizDetailsSchema } from "@/lib/schema"
 
-import { 
-  COLORS,
-  SPACING 
-} from "@/constants/theme"
+import { COLORS, SPACING } from "@/constants/theme"
+import QuestionCard from "@/components/QuestionCard"
 import styles from "@/styles/edit.styles"
 
 interface FormValues {
@@ -39,29 +38,54 @@ interface FormValues {
   timeLimit: string
 }
 
+interface Que {
+  id: string;
+  question_text: string;
+};
+
 export default function EditQuiz() {
 
   const router = useRouter()
   const { quizId } = useLocalSearchParams()
 
   const [quizDetails, setQuizDetails] = useState<any>({})
-  const [loading, setLoading] = useState(false)
+  const [questions, setQuestions] = useState<any[]>([])
+  const [loading, setLoading] = useState(true)
   const [submitLoader, setSubmitLoader] = useState(false)
+  const [refreshing, setRefreshing] = useState(false)
 
-  async function fetchQuizDetails() {
-    setLoading(true)
+  async function fetchData() {
     try {
-      const { data } = await supabase
+      const { data: quizDetailsData, error: quizError } = await supabase
         .from('quizzes')
         .select('*')
-        .eq('id', quizId)
-      if(data) setQuizDetails(data[0])
+        .eq('id', quizId);
+
+      const { data: questionsData, error: questionError } = await supabase
+        .from('questions')
+        .select('*')
+        .eq('quiz_id', quizId);
+
+      if(quizError || questionError) {
+        Alert.alert('Oops! something went wrong', `${JSON.stringify(quizError)} ${JSON.stringify(questionError)}`, [
+          { text: 'Ok' }
+        ]);
+      } else {
+        setQuizDetails(quizDetailsData[0]);
+        setQuestions(questionsData);
+      };
     } catch (error) {
       if(error) Alert.alert('Oops! something went wrong')
     } finally {
-      setLoading(false)
-    }
-  }
+      setLoading(false);
+    };
+  };
+
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+    fetchData();
+    setRefreshing(false);
+  }, [refreshing]);
 
   async function handleSubmit(values: FormValues) {
     const { name, description, timeLimit } = values;
@@ -93,8 +117,8 @@ export default function EditQuiz() {
   }
 
   useEffect(() => {
-    fetchQuizDetails();
-  }, [])
+    fetchData();
+  }, []);
 
   return (
     <SafeAreaView style={{ flex: 1, position: 'relative', backgroundColor: COLORS.muted }}>
@@ -119,7 +143,14 @@ export default function EditQuiz() {
           <ActivityIndicator size="large" color={COLORS.accent} />
         </View>
       ) : (
-        <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+        <ScrollView
+          refreshControl={
+            <RefreshControl 
+              refreshing={refreshing}
+              onRefresh={onRefresh}
+            />
+          } 
+        >
           <View style={styles.container}>
             <Formik
               onSubmit={handleSubmit}
@@ -172,14 +203,27 @@ export default function EditQuiz() {
                         color={COLORS.background} 
                       />
                     ) : (
-                      <Text style={styles.btnPrimaryText}>Publish and Continue</Text>
+                      <Text style={styles.btnPrimaryText}>Save Changes</Text>
                     )}
                   </TouchableOpacity>
                 </View>
               )}
             </Formik>
+            <View style={{ gap: SPACING.md - 2 }}>
+              <Text style={styles.headline}>Questions</Text>
+              <View style={{ borderBottomWidth: 1, borderBlockColor: 'rgba(0,0,0,0.1)' }} />
+              {questions && (
+                questions.map((question) => (
+                  <QuestionCard 
+                    key={question.id} 
+                    id={question.id}
+                    question_text={question.question_text}
+                  />
+                ))
+              )}
+            </View>
           </View>
-        </TouchableWithoutFeedback>
+        </ScrollView>
       )}
     </SafeAreaView>
   )

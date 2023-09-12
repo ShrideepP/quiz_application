@@ -16,6 +16,11 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: SPACING.lg
   },
+  loadingContainer: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   formContainer: {
     width: '100%',
     gap: SPACING.md - 2,

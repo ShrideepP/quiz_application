@@ -14,9 +14,8 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: SPACING.lg,
+    gap: SPACING.xl,
+    padding: SPACING.xl,
   },
   loadingContainer: {
     flex: 1,

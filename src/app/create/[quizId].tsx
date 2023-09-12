@@ -30,15 +30,6 @@ import { quizQueSchema } from "@/lib/schema"
 import { COLORS } from "@/constants/theme"
 import styles from "@/styles/addQuestion.styles"
 
-interface FormValues {
-  questionName: string
-  option1: string
-  option2: string
-  option3: string
-  option4: string
-  correctAnswer: string
-}
-
 const initialValues = {
   questionName: '',
   option1: '',
