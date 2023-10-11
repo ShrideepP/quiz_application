@@ -6,23 +6,23 @@ Welcome to the React Native Quiz Application! This app allows users to create, e
 
 ### Video Demonstartion
 
-[![Video: How to Create a Quiz]](/demo/video.MP4)
+[![Video: How to Create a Quiz]](/demo/video.mp4)
 
 #### Home Screen
 
-![Home Screen](/demo/home.PNG)
+![Home Screen](/demo/home.png)
 
 #### Explore Quizzes
 
-![Explore Quizzes](/demo/explore.PNG)
+![Explore Quizzes](/demo/explore.png)
 
 #### Create Quiz
 
-![Create Quiz](/demo/create.PNG)
+![Create Quiz](/demo/create.png)
 
 #### Take Quiz
 
-![Take Quiz](/demo/quiz.PNG)
+![Take Quiz](/demo/quiz.png)
 
 ## Features
 
